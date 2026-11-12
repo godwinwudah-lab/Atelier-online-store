@@ -1,0 +1,1439 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ATELIER — Objects for Intentional Living</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- Paystack Inline JS SDK -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            stone: {
+              50: '#FAFAFA',
+              100: '#F5F5F4',
+              150: '#EFEFED',
+              200: '#E5E5E3',
+              300: '#D4D4D0',
+              500: '#737370',
+              800: '#262625',
+              900: '#171717',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased selection:bg-stone-900 selection:text-white">
+
+  <!-- Top Subtle Announcement Bar -->
+  <div class="bg-stone-900 text-stone-100 text-[11px] tracking-[0.14em] uppercase text-center py-2.5 px-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+    <span>Complimentary standard shipping on orders over ₵1,500 &mdash; Designed to endure</span>
+    <button id="setup-guide-trigger" class="underline underline-offset-4 text-stone-300 hover:text-white transition-colors">
+      Paystack Setup
+    </button>
+  </div>
+
+  <!-- Sticky Minimalist Header -->
+  <header class="sticky top-0 z-40 bg-stone-50/90 backdrop-blur-md border-b border-stone-200 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 h-16 sm:h-20 flex items-center justify-between gap-4">
+      
+      <!-- Mobile Menu Button & Logo -->
+      <div class="flex items-center gap-3">
+        <button id="mobile-menu-btn" aria-label="Open Navigation" class="md:hidden p-2 -ml-2 text-stone-700 hover:text-stone-900 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5m-16.5 4.5h10.5" />
+          </svg>
+        </button>
+        <a href="#" class="text-lg sm:text-xl font-medium tracking-[0.22em] uppercase text-stone-900">
+          ATELIER
+        </a>
+      </div>
+
+      <!-- Center Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-8 text-xs tracking-[0.08em] uppercase text-stone-500">
+        <button data-nav-cat="All" class="nav-cat-link text-stone-900 font-medium hover:text-stone-900 transition-colors">Shop All</button>
+        <button data-nav-cat="Home & Living" class="nav-cat-link hover:text-stone-900 transition-colors">Home Goods</button>
+        <button data-nav-cat="Apparel" class="nav-cat-link hover:text-stone-900 transition-colors">Apparel</button>
+        <button data-nav-cat="Everyday Carry" class="nav-cat-link hover:text-stone-900 transition-colors">Accessories</button>
+        <a href="#journal" class="hover:text-stone-900 transition-colors">Philosophy</a>
+      </nav>
+
+      <!-- Right Utility Actions -->
+      <div class="flex items-center gap-2 sm:gap-4">
+        <!-- Search Toggle -->
+        <button id="search-toggle-btn" aria-label="Toggle Search" class="p-2 text-stone-700 hover:text-stone-900 rounded-full hover:bg-stone-100 transition-colors">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 6.05 6.05a7.5 7.5 0 0 0 10.6 10.6Z" />
+          </svg>
+        </button>
+
+        <!-- Currency Indicator -->
+        <span class="hidden sm:inline-block text-[11px] tracking-wider uppercase text-stone-500 border-r border-stone-200 pr-4">
+          GHS ₵
+        </span>
+
+        <!-- Cart Drawer Trigger -->
+        <button id="cart-open-btn" aria-label="Open Shopping Bag" class="relative flex items-center gap-2 py-2 px-3 rounded-full hover:bg-stone-100 transition-colors text-stone-900">
+          <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007Z" />
+          </svg>
+          <span class="hidden sm:inline text-xs font-medium tracking-wide">Bag</span>
+          <span id="cart-badge" class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-[11px] font-medium rounded-full bg-stone-900 text-white transition-transform">
+            0
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Expandable Search Bar -->
+    <div id="header-search-bar" class="hidden border-t border-stone-200 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-3 flex items-center gap-3">
+        <svg class="w-4 h-4 text-stone-400 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 6.05 6.05a7.5 7.5 0 0 0 10.6 10.6Z" />
+        </svg>
+        <input 
+          id="header-search-input" 
+          type="text" 
+          placeholder="Search ceramics, merino wool, brass lighting, leather goods..." 
+          class="w-full text-sm bg-transparent focus:outline-none text-stone-900 placeholder:text-stone-400"
+        />
+        <button id="clear-search-btn" class="hidden text-xs text-stone-500 hover:text-stone-900 uppercase tracking-wider">Clear</button>
+        <button id="close-search-btn" class="p-1 text-stone-400 hover:text-stone-900" aria-label="Close Search">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-menu" class="hidden md:hidden border-t border-stone-200 bg-white px-6 py-5 space-y-4">
+      <div class="flex flex-col space-y-3 text-xs tracking-[0.12em] uppercase text-stone-600">
+        <button data-nav-cat="All" class="mobile-nav-link text-left py-1 text-stone-900 font-medium">Shop All</button>
+        <button data-nav-cat="Home & Living" class="mobile-nav-link text-left py-1">Home Goods</button>
+        <button data-nav-cat="Apparel" class="mobile-nav-link text-left py-1">Apparel</button>
+        <button data-nav-cat="Everyday Carry" class="mobile-nav-link text-left py-1">Accessories</button>
+        <a href="#journal" class="mobile-nav-link py-1">Philosophy</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="border-b border-stone-200 bg-stone-100/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20 lg:py-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        
+        <!-- Editorial Copy -->
+        <div class="lg:col-span-6 space-y-6">
+          <p class="text-[11px] uppercase tracking-[0.2em] text-stone-500">
+            Autumn / Winter Collection &mdash; No. 04
+          </p>
+          <h1 class="text-4xl sm:text-5xl lg:text-[54px] font-light tracking-[-0.025em] leading-[1.1] text-stone-900">
+            Objects for intentional living.
+          </h1>
+          <p class="text-base sm:text-lg font-light text-stone-500 max-w-lg leading-relaxed">
+            A considered edit of architectural homeware, natural-fiber garments, and tactile everyday tools crafted in small batches by independent workshops.
+          </p>
+          <div class="pt-2 flex flex-wrap items-center gap-4">
+            <a href="#catalog" class="inline-flex items-center justify-center px-7 py-3.5 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.12em] hover:bg-stone-800 transition-all">
+              Explore Collection
+            </a>
+            <a href="#journal" class="inline-flex items-center justify-center px-6 py-3.5 rounded-full border border-stone-300 text-stone-800 text-xs font-medium uppercase tracking-[0.12em] hover:border-stone-900 transition-all">
+              Our Ethos
+            </a>
+          </div>
+        </div>
+
+        <!-- Editorial Visual Composition -->
+        <div class="lg:col-span-6">
+          <div class="relative aspect-[4/3] sm:aspect-[16/11] rounded-2xl overflow-hidden bg-stone-200 border border-stone-200">
+            <img 
+              src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1400&q=85" 
+              alt="Minimalist ceramic objects and warm natural interior" 
+              onerror="this.onerror=null; this.src='https://placehold.co/1200x900/EAE8E3/262625?text=ATELIER+STUDIO+04';"
+              class="w-full h-full object-cover object-center"
+            />
+            <div class="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-auto bg-white/90 backdrop-blur-md px-4 py-3 rounded-xl border border-stone-200/80">
+              <p class="text-[11px] uppercase tracking-[0.14em] text-stone-500">Featured Study</p>
+              <p class="text-xs font-medium text-stone-900 mt-0.5">Raw Stoneware &amp; Brushed Brass &mdash; Copenhagen</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Catalog Section -->
+  <main id="catalog" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-14 sm:py-20">
+    
+    <!-- Section Header & Filter/Sort Controls -->
+    <div class="flex flex-col gap-6 pb-8 border-b border-stone-200">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-light tracking-[-0.02em] text-stone-900">Curated Catalog</h2>
+          <p id="results-count" class="text-xs text-stone-500 mt-1.5 tracking-wide">Showing 8 objects</p>
+        </div>
+
+        <!-- Inline Search & Sort -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="relative flex-1 sm:flex-initial">
+            <input 
+              id="catalog-search-input" 
+              type="text" 
+              placeholder="Filter by keyword..." 
+              class="w-full sm:w-52 pl-9 pr-3 py-2 text-xs bg-white border border-stone-200 rounded-full focus:outline-none focus:border-stone-900 transition-colors"
+            />
+            <svg class="w-3.5 h-3.5 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 6.05 6.05a7.5 7.5 0 0 0 10.6 10.6Z" />
+            </svg>
+          </div>
+
+          <div class="relative">
+            <select 
+              id="sort-select" 
+              aria-label="Sort products"
+              class="appearance-none bg-white border border-stone-200 rounded-full pl-4 pr-9 py-2 text-xs text-stone-800 focus:outline-none focus:border-stone-900 cursor-pointer"
+            >
+              <option value="featured">Sort: Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+            <svg class="w-3.5 h-3.5 text-stone-500 pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div id="category-pills" class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+        <button data-category="All" class="cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-stone-900 text-white border border-stone-900 shrink-0">
+          All Objects
+        </button>
+        <button data-category="Home & Living" class="cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-white text-stone-600 border border-stone-200 hover:border-stone-400 shrink-0">
+          Home &amp; Living
+        </button>
+        <button data-category="Apparel" class="cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-white text-stone-600 border border-stone-200 hover:border-stone-400 shrink-0">
+          Apparel
+        </button>
+        <button data-category="Everyday Carry" class="cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-white text-stone-600 border border-stone-200 hover:border-stone-400 shrink-0">
+          Everyday Carry
+        </button>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 mt-10">
+      <!-- Dynamically populated via JS -->
+    </div>
+
+    <!-- Empty Filter State -->
+    <div id="empty-state" class="hidden py-20 text-center space-y-4">
+      <p class="text-base font-light text-stone-600">No objects match your current filter criteria.</p>
+      <button id="reset-filters-btn" class="px-5 py-2.5 rounded-full border border-stone-900 text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-colors">
+        Reset Filters
+      </button>
+    </div>
+  </main>
+
+  <!-- Minimalist Philosophy / Editorial Banner -->
+  <section id="journal" class="border-t border-stone-200 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-16 sm:py-24">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-14">
+        <div class="space-y-3">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-stone-400">01 / Materiality</span>
+          <h3 class="text-lg font-normal text-stone-900">Honest Raw Materials</h3>
+          <p class="text-sm font-light text-stone-500 leading-relaxed">
+            We prioritize unlacquered brass, high-fired stoneware, organic Belgian flax, and vegetable-tanned leathers that develop character with daily use.
+          </p>
+        </div>
+        <div class="space-y-3">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-stone-400">02 / Longevity</span>
+          <h3 class="text-lg font-normal text-stone-900">Quiet Permanence</h3>
+          <p class="text-sm font-light text-stone-500 leading-relaxed">
+            Free from seasonal trends or superfluous ornament. Every silhouette is pared back to its essential geometry so it belongs effortlessly in your space.
+          </p>
+        </div>
+        <div class="space-y-3">
+          <span class="text-[11px] uppercase tracking-[0.18em] text-stone-400">03 / Provenance</span>
+          <h3 class="text-lg font-normal text-stone-900">Small-Batch Studios</h3>
+          <p class="text-sm font-light text-stone-500 leading-relaxed">
+            Produced in limited runs alongside family-owned kilns, mills, and workshops across Japan, Portugal, and Scandinavia.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Minimalist Footer with Newsletter -->
+  <footer class="border-t border-stone-200 bg-stone-50 text-stone-600">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 pb-12 border-b border-stone-200">
+        
+        <!-- Brand & Newsletter -->
+        <div class="lg:col-span-5 space-y-4">
+          <a href="#" class="text-lg font-medium tracking-[0.22em] uppercase text-stone-900 block">ATELIER</a>
+          <p class="text-sm font-light text-stone-500 max-w-sm leading-relaxed">
+            Receive occasional dispatches on new studio releases, material essays, and private archive sales.
+          </p>
+          <form id="newsletter-form" class="pt-2 max-w-md">
+            <div class="flex items-center gap-2">
+              <input 
+                id="newsletter-email" 
+                type="email" 
+                required
+                placeholder="Enter your email address" 
+                class="w-full px-4 py-3 text-xs bg-white border border-stone-200 rounded-full focus:outline-none focus:border-stone-900 text-stone-900"
+              />
+              <button type="submit" class="px-6 py-3 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.12em] hover:bg-stone-800 transition-colors shrink-0">
+                Subscribe
+              </button>
+            </div>
+            <p id="newsletter-feedback" class="hidden text-xs text-stone-800 mt-2.5 pl-2"></p>
+          </form>
+        </div>
+
+        <!-- Navigation Columns -->
+        <div class="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs">
+          <div class="space-y-3">
+            <p class="uppercase tracking-[0.14em] text-stone-900 font-medium">Collection</p>
+            <ul class="space-y-2.5 text-stone-500">
+              <li><button data-nav-cat="All" class="footer-cat-link hover:text-stone-900">All Objects</button></li>
+              <li><button data-nav-cat="Home & Living" class="footer-cat-link hover:text-stone-900">Home &amp; Living</button></li>
+              <li><button data-nav-cat="Apparel" class="footer-cat-link hover:text-stone-900">Apparel</button></li>
+              <li><button data-nav-cat="Everyday Carry" class="footer-cat-link hover:text-stone-900">Everyday Carry</button></li>
+            </ul>
+          </div>
+          <div class="space-y-3">
+            <p class="uppercase tracking-[0.14em] text-stone-900 font-medium">Client Care</p>
+            <ul class="space-y-2.5 text-stone-500">
+              <li><a href="#catalog" class="hover:text-stone-900">Shipping &amp; Returns</a></li>
+              <li><a href="#journal" class="hover:text-stone-900">Material Care Guide</a></li>
+              <li><a href="#catalog" class="hover:text-stone-900">Trade Program</a></li>
+              <li><a href="#newsletter-form" class="hover:text-stone-900">Contact Studio</a></li>
+            </ul>
+          </div>
+          <div class="space-y-3 col-span-2 sm:col-span-1">
+            <p class="uppercase tracking-[0.14em] text-stone-900 font-medium">Showrooms</p>
+            <p class="text-stone-500 leading-relaxed">
+              Bredgade 45, 1260<br />
+              Copenhagen K, Denmark<br />
+              Tue &ndash; Sat, 11:00 &ndash; 18:00
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-400 tracking-wide">
+        <p>&copy; 2026 ATELIER Studio. All rights reserved.</p>
+        <div class="flex items-center gap-6">
+          <span>Privacy Policy</span>
+          <span>Terms of Service</span>
+          <span>Carbon-Neutral Delivery</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- PRODUCT QUICK-VIEW MODAL                                              -->
+  <!-- ===================================================================== -->
+  <div id="quickview-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6">
+    <!-- Backdrop -->
+    <div id="quickview-backdrop" class="fixed inset-0 bg-stone-900/40 backdrop-blur-xs transition-opacity"></div>
+    
+    <!-- Modal Dialog -->
+    <div class="relative z-10 w-full max-w-3xl bg-white rounded-2xl border border-stone-200 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col md:flex-row">
+      <button id="quickview-close" aria-label="Close Quick View" class="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/90 text-stone-700 hover:text-stone-900 border border-stone-200 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Image Pane -->
+      <div class="md:w-1/2 bg-stone-100 aspect-square md:aspect-auto">
+        <img id="qv-image" src="" alt="" class="w-full h-full object-cover" />
+      </div>
+
+      <!-- Details Pane -->
+      <div class="md:w-1/2 p-6 sm:p-8 flex flex-col justify-between overflow-y-auto">
+        <div class="space-y-4">
+          <div>
+            <p id="qv-category" class="text-[11px] uppercase tracking-[0.16em] text-stone-400"></p>
+            <h3 id="qv-title" class="text-2xl font-light text-stone-900 mt-1"></h3>
+            <p id="qv-price" class="text-base font-medium text-stone-900 mt-2"></p>
+          </div>
+
+          <p id="qv-description" class="text-sm font-light text-stone-600 leading-relaxed border-t border-stone-100 pt-4"></p>
+
+          <div class="border-t border-stone-100 pt-4 space-y-2 text-xs">
+            <div class="flex justify-between">
+              <span class="text-stone-400">Material</span>
+              <span id="qv-material" class="text-stone-800 font-medium text-right"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-400">Dimensions</span>
+              <span id="qv-dimensions" class="text-stone-800 font-medium text-right"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-400">Origin</span>
+              <span id="qv-origin" class="text-stone-800 font-medium text-right"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quantity & Add to Bag -->
+        <div class="pt-6 mt-6 border-t border-stone-200 flex items-center gap-3">
+          <div class="inline-flex items-center border border-stone-200 rounded-full px-2 py-1">
+            <button id="qv-qty-dec" class="w-8 h-8 flex items-center justify-center text-stone-600 hover:text-stone-900">&minus;</button>
+            <span id="qv-qty-val" class="w-8 text-center text-xs font-medium">1</span>
+            <button id="qv-qty-inc" class="w-8 h-8 flex items-center justify-center text-stone-600 hover:text-stone-900">+</button>
+          </div>
+          <button id="qv-add-btn" class="flex-1 py-3.5 px-6 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.12em] hover:bg-stone-800 transition-colors">
+            Add to Bag
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- SLIDE-OVER SHOPPING CART DRAWER                                       -->
+  <!-- ===================================================================== -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+    <!-- Backdrop -->
+    <div id="cart-backdrop" class="fixed inset-0 bg-stone-900/40 backdrop-blur-xs transition-opacity"></div>
+
+    <!-- Drawer Panel -->
+    <aside class="fixed top-0 right-0 bottom-0 z-10 w-full max-w-md bg-white border-l border-stone-200 shadow-2xl flex flex-col">
+      <!-- Drawer Header -->
+      <div class="px-6 py-5 border-b border-stone-200 flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-medium uppercase tracking-[0.14em] text-stone-900">Shopping Bag</h3>
+          <p id="drawer-item-count" class="text-xs text-stone-500 mt-0.5">0 items</p>
+        </div>
+        <button id="cart-close-btn" aria-label="Close Cart" class="p-2 -mr-2 text-stone-500 hover:text-stone-900 rounded-full hover:bg-stone-100">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Free Shipping Progress Bar -->
+      <div class="px-6 py-3.5 bg-stone-50 border-b border-stone-200">
+        <p id="shipping-status-text" class="text-xs text-stone-700 mb-2">
+          Add <span class="font-medium">₵1,500.00</span> more for complimentary shipping.
+        </p>
+        <div class="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
+          <div id="shipping-progress-bar" class="h-full bg-stone-900 rounded-full transition-all duration-300" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Cart Items List -->
+      <div id="cart-items-container" class="flex-1 overflow-y-auto px-6 py-4 divide-y divide-stone-100">
+        <!-- Populated dynamically via JS -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div id="cart-footer" class="p-6 border-t border-stone-200 bg-stone-50 space-y-4">
+        <div class="space-y-1.5 text-xs">
+          <div class="flex justify-between text-stone-500">
+            <span>Shipping</span>
+            <span id="cart-shipping-cost">Calculated at checkout</span>
+          </div>
+          <div class="flex justify-between text-sm font-medium text-stone-900 pt-1">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+        </div>
+        <button id="checkout-btn" disabled class="w-full py-3.5 px-6 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.14em] hover:bg-stone-800 disabled:bg-stone-300 disabled:cursor-not-allowed transition-colors">
+          Proceed to Checkout
+        </button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- CHECKOUT & ORDER CONFIRMATION MODAL                                   -->
+  <!-- ===================================================================== -->
+  <div id="checkout-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6">
+    <div id="checkout-backdrop" class="fixed inset-0 bg-stone-900/50 backdrop-blur-xs"></div>
+
+    <div class="relative z-10 w-full max-w-lg bg-white rounded-2xl border border-stone-200 shadow-2xl overflow-hidden max-h-[92vh] overflow-y-auto">
+      <!-- Checkout Form View -->
+      <div id="checkout-form-view" class="p-6 sm:p-8 space-y-6">
+        <div class="flex items-center justify-between border-b border-stone-200 pb-4">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.16em] text-stone-400">ATELIER Checkout</p>
+            <h3 class="text-xl font-light text-stone-900 mt-0.5">Delivery &amp; Paystack Payment</h3>
+          </div>
+          <button id="checkout-close-btn" class="p-2 text-stone-400 hover:text-stone-900 rounded-full">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Test Mode Notice (Shown automatically if default placeholder key is still set) -->
+        <div id="paystack-key-warning" class="hidden p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] text-amber-900 leading-relaxed">
+          <span class="font-medium">Test Key Placeholder Active:</span> Replace <code class="px-1 py-0.5 bg-amber-100 rounded">PAYSTACK_PUBLIC_KEY</code> in <code class="px-1 py-0.5 bg-amber-100 rounded">index.html</code> with your real Paystack Public Key (<code class="px-1 py-0.5 bg-amber-100 rounded">pk_test_...</code> or <code class="px-1 py-0.5 bg-amber-100 rounded">pk_live_...</code>) to open the Paystack popup.
+        </div>
+
+        <form id="checkout-form" class="space-y-4 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="co-name" class="block text-stone-600 mb-1">Full Name *</label>
+              <input id="co-name" type="text" required placeholder="Kwame Mensah" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-stone-900" />
+            </div>
+            <div>
+              <label for="co-email" class="block text-stone-600 mb-1">Email Address *</label>
+              <input id="co-email" type="email" required placeholder="kwame@studio.gh" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-stone-900" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="co-phone" class="block text-stone-600 mb-1">Phone Number (MoMo / Delivery) *</label>
+              <input id="co-phone" type="tel" required placeholder="+233 24 000 0000" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-stone-900" />
+            </div>
+            <div>
+              <label for="co-city" class="block text-stone-600 mb-1">City / Region *</label>
+              <input id="co-city" type="text" required placeholder="Accra, Greater Accra" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-stone-900" />
+            </div>
+          </div>
+
+          <div>
+            <label for="co-address" class="block text-stone-600 mb-1">Delivery Address &amp; Landmark *</label>
+            <input id="co-address" type="text" required placeholder="14 Osu Badu Street, Airport Residential" class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 focus:outline-none focus:border-stone-900" />
+          </div>
+
+          <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 space-y-1.5">
+            <div class="flex justify-between text-stone-500">
+              <span>Items Subtotal</span>
+              <span id="co-subtotal">₵0.00</span>
+            </div>
+            <div class="flex justify-between text-stone-500">
+              <span>Standard Delivery</span>
+              <span id="co-shipping">₵0.00</span>
+            </div>
+            <div class="flex justify-between text-sm font-medium text-stone-900 pt-1.5 border-t border-stone-200">
+              <span>Total Due (GHS)</span>
+              <span id="co-total">₵0.00</span>
+            </div>
+          </div>
+
+          <button id="paystack-submit-btn" type="submit" class="w-full py-3.5 px-6 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.14em] hover:bg-stone-800 transition-colors flex items-center justify-center gap-2">
+            <span>Pay with Paystack</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+            </svg>
+          </button>
+          <p class="text-[11px] text-center text-stone-400">
+            Secured by Paystack &mdash; Supports Mobile Money (MTN, Telecel, AT), Visa &amp; Mastercard
+          </p>
+        </form>
+      </div>
+
+      <!-- Order Confirmation Screen -->
+      <div id="checkout-success-view" class="hidden p-6 sm:p-8 space-y-6">
+        <div class="text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-stone-900 text-white flex items-center justify-center mx-auto">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.18em] text-stone-400">Payment Verified</p>
+            <h3 class="text-2xl font-light text-stone-900 mt-1">Thank you for your order.</h3>
+            <p class="text-xs text-stone-500 mt-1">
+              A confirmation receipt has been sent to <span id="receipt-email" class="text-stone-900 font-medium"></span>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Minimalist Receipt Card -->
+        <div class="bg-stone-50 border border-stone-200 rounded-2xl p-5 space-y-4 text-xs">
+          <div class="flex flex-wrap justify-between gap-2 pb-3 border-b border-stone-200">
+            <div>
+              <p class="text-[10px] uppercase tracking-wider text-stone-400">Paystack Reference</p>
+              <p id="receipt-ref" class="font-mono font-medium text-stone-900 mt-0.5">ATL-000000</p>
+            </div>
+            <div class="text-right">
+              <p class="text-[10px] uppercase tracking-wider text-stone-400">Amount Paid</p>
+              <p id="receipt-total" class="font-medium text-stone-900 mt-0.5">₵0.00</p>
+            </div>
+          </div>
+
+          <div class="space-y-1 pb-3 border-b border-stone-200">
+            <p class="text-[10px] uppercase tracking-wider text-stone-400">Delivery Details</p>
+            <p id="receipt-customer" class="font-medium text-stone-900"></p>
+            <p id="receipt-phone" class="text-stone-600"></p>
+            <p id="receipt-address" class="text-stone-600"></p>
+          </div>
+
+          <div class="space-y-2">
+            <p class="text-[10px] uppercase tracking-wider text-stone-400">Itemized Summary</p>
+            <div id="receipt-items" class="space-y-1.5 text-stone-700">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1 text-center">
+          <button id="continue-shopping-btn" class="w-full sm:w-auto px-8 py-3.5 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.14em] hover:bg-stone-800 transition-colors">
+            Continue Exploring
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- DEVELOPER PAYSTACK SETUP INSTRUCTIONS MODAL                           -->
+  <!-- ===================================================================== -->
+  <div id="setup-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6">
+    <div id="setup-backdrop" class="fixed inset-0 bg-stone-900/50 backdrop-blur-xs"></div>
+    <div class="relative z-10 w-full max-w-lg bg-white rounded-2xl border border-stone-200 shadow-2xl p-6 sm:p-8 space-y-5">
+      <div class="flex items-start justify-between border-b border-stone-200 pb-4">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.16em] text-stone-400">Go-Live Checklist</p>
+          <h3 class="text-xl font-light text-stone-900 mt-0.5">Paystack &amp; Order Setup</h3>
+        </div>
+        <button id="setup-close-btn" class="p-2 text-stone-400 hover:text-stone-900 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-stone-600 leading-relaxed">
+        <div class="space-y-1">
+          <p class="font-medium text-stone-900">1. Add Your Paystack Public Key</p>
+          <p>
+            Open <code class="px-1.5 py-0.5 bg-stone-100 rounded text-stone-800">index.html</code> and locate the <code class="px-1.5 py-0.5 bg-stone-100 rounded text-stone-800">STORE_CONFIG</code> block at the top of the <code class="px-1.5 py-0.5 bg-stone-100 rounded text-stone-800">&lt;script&gt;</code> tag. Replace <code class="px-1.5 py-0.5 bg-stone-100 rounded text-stone-800">pk_test_xxxxxxxxxxxxxxxxxxxxxxxx</code> with your key from <strong>Paystack Dashboard &rarr; Settings &rarr; API Keys &amp; Webhooks</strong>.
+          </p>
+        </div>
+
+        <div class="space-y-1">
+          <p class="font-medium text-stone-900">2. Optional: Connect Order Notifications</p>
+          <p>
+            Paste a Formspree or Google Apps Script URL into <code class="px-1.5 py-0.5 bg-stone-100 rounded text-stone-800">ORDER_WEBHOOK_URL</code> in the same config block to automatically receive an email or spreadsheet row whenever a payment succeeds.
+          </p>
+        </div>
+
+        <div class="p-3.5 rounded-xl bg-stone-50 border border-stone-200 text-[11px] text-stone-500">
+          Current Status: <span id="setup-key-status" class="font-medium text-stone-900"></span>
+        </div>
+      </div>
+
+      <div class="pt-2 flex justify-end">
+        <button id="setup-done-btn" class="px-6 py-2.5 rounded-full bg-stone-900 text-white text-xs font-medium uppercase tracking-[0.12em] hover:bg-stone-800 transition-colors">
+          Got It
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-300">
+    <div class="bg-stone-900 text-white text-xs tracking-wide px-5 py-3 rounded-full shadow-lg flex items-center gap-2.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+      <span id="toast-message">Added to bag</span>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- APPLICATION SCRIPT                                                    -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 0. STORE & PAYSTACK CONFIGURATION (EDIT BEFORE GOING LIVE)
+    // =========================================================================
+    const STORE_CONFIG = {
+      // Paste your Paystack Public Key here (pk_test_... for testing, pk_live_... for production)
+      PAYSTACK_PUBLIC_KEY: 'pk_test_xxxxxxxxxxxxxxxxxxxxxxxx',
+      STORE_CURRENCY: 'GHS',
+      CURRENCY_SYMBOL: '₵',
+      FREE_SHIPPING_THRESHOLD: 1500, // Complimentary delivery for orders >= ₵1,500
+      STANDARD_SHIPPING_FEE: 65,     // Flat delivery fee in GHS when below threshold
+      // Optional: Paste a Formspree or Google Apps Script webhook URL to log paid orders
+      ORDER_WEBHOOK_URL: ''
+    };
+
+    // 1. Curated Product Catalog Data (Priced in Ghana Cedis - GHS)
+    const PRODUCTS = [
+      {
+        id: 'ceramic-carafe',
+        name: 'Ceramic Pour-Over Carafe',
+        category: 'Home & Living',
+        price: 780,
+        featuredOrder: 1,
+        image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Ceramic+Carafe',
+        description: 'Wheel-thrown from speckled stoneware clay with a matte raw exterior and gloss-glazed interior for effortless morning brewing.',
+        material: 'High-fired Japanese stoneware',
+        dimensions: '14.5 cm H × 11.0 cm Ø (600 ml)',
+        origin: 'Mashiko, Japan'
+      },
+      {
+        id: 'merino-overshirt',
+        name: 'Merino Wool Overshirt',
+        category: 'Apparel',
+        price: 1850,
+        featuredOrder: 2,
+        image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Merino+Overshirt',
+        description: 'Relaxed architectural tailoring cut from breathable mid-weight extrafine merino wool. Finished with corozo nut buttons.',
+        material: '100% Extrafine Merino Wool',
+        dimensions: 'Relaxed fit — Model wears size M',
+        origin: 'Porto, Portugal'
+      },
+      {
+        id: 'brass-desk-lamp',
+        name: 'Brass Desk Lamp',
+        category: 'Home & Living',
+        price: 1620,
+        featuredOrder: 3,
+        image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Brass+Desk+Lamp',
+        description: 'Balanced spun-brass shade casting a warm, glare-free pool of light across desks and bedside tables. Develops a natural patina over time.',
+        material: 'Solid unlacquered brushed brass',
+        dimensions: '38 cm H × 24 cm Shade Ø',
+        origin: 'Aarhus, Denmark'
+      },
+      {
+        id: 'linen-trousers',
+        name: 'Linen Lounge Trousers',
+        category: 'Apparel',
+        price: 1240,
+        featuredOrder: 4,
+        image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Linen+Trousers',
+        description: 'Soft-washed European flax trousers featuring a tailored front pleat, concealed drawstring waist, and gently tapered leg.',
+        material: '100% Organic Belgian Flax Linen',
+        dimensions: 'Full length, mid-rise',
+        origin: 'Vilnius, Lithuania'
+      },
+      {
+        id: 'espresso-set',
+        name: 'Stoneware Espresso Set',
+        category: 'Home & Living',
+        price: 620,
+        featuredOrder: 5,
+        image: 'https://images.unsplash.com/photo-1577937927133-66ef06acdf18?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Espresso+Set',
+        description: 'Pair of hand-finished demitasse cups and matching saucers in warm oatmeal glaze, retaining heat for slow espresso rituals.',
+        material: 'Mineral-glazed stoneware (Set of 2)',
+        dimensions: '6.2 cm H × 6.5 cm Ø (90 ml each)',
+        origin: 'Alentejo, Portugal'
+      },
+      {
+        id: 'leather-cardholder',
+        name: 'Vegetable-Tanned Cardholder',
+        category: 'Everyday Carry',
+        price: 520,
+        featuredOrder: 6,
+        image: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Leather+Cardholder',
+        description: 'Slim three-pocket card case crafted from full-grain Tuscan shoulder leather with hand-burnished edges and tonal saddle stitching.',
+        material: 'Full-grain vegetable-tanned leather',
+        dimensions: '10.2 cm × 7.4 cm',
+        origin: 'Florence, Italy'
+      },
+      {
+        id: 'architectural-clock',
+        name: 'Architectural Wall Clock',
+        category: 'Home & Living',
+        price: 1080,
+        featuredOrder: 7,
+        image: 'https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Wall+Clock',
+        description: 'Silent-sweep quartz timepiece framed in anodized matte aluminum with debossed baton hour markers and zero branding.',
+        material: 'Anodized aluminum & mineral glass',
+        dimensions: '28.0 cm Ø × 3.8 cm D',
+        origin: 'Zurich, Switzerland'
+      },
+      {
+        id: 'cotton-tote',
+        name: 'Organic Cotton Tote',
+        category: 'Everyday Carry',
+        price: 440,
+        featuredOrder: 8,
+        image: 'https://images.unsplash.com/photo-1597484661643-2f5fef640dd1?auto=format&fit=crop&w=900&q=80',
+        fallback: 'https://placehold.co/800x1000/EFEFED/262625?text=Organic+Tote',
+        description: 'Heavyweight 18oz unbleached canvas carryall with reinforced base gusset, dual shoulder/hand straps, and interior key slip.',
+        material: '18oz GOTS-certified organic cotton',
+        dimensions: '38 cm H × 42 cm W × 14 cm D',
+        origin: 'Okayama, Japan'
+      }
+    ];
+
+    // 2. Application State
+    const state = {
+      category: 'All',
+      searchQuery: '',
+      sortBy: 'featured',
+      cart: [], // Array of { product, qty }
+      quickViewProduct: null,
+      quickViewQty: 1
+    };
+
+    // 3. DOM References
+    const productGrid = document.getElementById('product-grid');
+    const resultsCount = document.getElementById('results-count');
+    const emptyState = document.getElementById('empty-state');
+    const categoryPills = document.querySelectorAll('.cat-pill');
+    const sortSelect = document.getElementById('sort-select');
+    const catalogSearchInput = document.getElementById('catalog-search-input');
+    const headerSearchInput = document.getElementById('header-search-input');
+    const headerSearchBar = document.getElementById('header-search-bar');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+
+    // Quick View Modal Refs
+    const qvModal = document.getElementById('quickview-modal');
+    const qvImage = document.getElementById('qv-image');
+    const qvCategory = document.getElementById('qv-category');
+    const qvTitle = document.getElementById('qv-title');
+    const qvPrice = document.getElementById('qv-price');
+    const qvDescription = document.getElementById('qv-description');
+    const qvMaterial = document.getElementById('qv-material');
+    const qvDimensions = document.getElementById('qv-dimensions');
+    const qvOrigin = document.getElementById('qv-origin');
+    const qvQtyVal = document.getElementById('qv-qty-val');
+
+    // Cart Drawer Refs
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartBadge = document.getElementById('cart-badge');
+    const drawerItemCount = document.getElementById('drawer-item-count');
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const cartSubtotal = document.getElementById('cart-subtotal');
+    const cartShippingCost = document.getElementById('cart-shipping-cost');
+    const shippingStatusText = document.getElementById('shipping-status-text');
+    const shippingProgressBar = document.getElementById('shipping-progress-bar');
+    const checkoutBtn = document.getElementById('checkout-btn');
+
+    // Checkout Refs
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutFormView = document.getElementById('checkout-form-view');
+    const checkoutSuccessView = document.getElementById('checkout-success-view');
+
+    // 4. Helper Functions
+    function formatMoney(amount) {
+      return `${STORE_CONFIG.CURRENCY_SYMBOL}${amount.toLocaleString('en-GH', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
+    }
+
+    function isPlaceholderPaystackKey() {
+      return !STORE_CONFIG.PAYSTACK_PUBLIC_KEY || STORE_CONFIG.PAYSTACK_PUBLIC_KEY.includes('xxxxxxxx');
+    }
+
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-2');
+      }, 2400);
+    }
+
+    // 5. Render Product Catalog
+    function renderProducts() {
+      let filtered = PRODUCTS.filter(p => {
+        const matchesCategory = state.category === 'All' || p.category === state.category;
+        const query = state.searchQuery.trim().toLowerCase();
+        const matchesSearch = !query || 
+          p.name.toLowerCase().includes(query) || 
+          p.description.toLowerCase().includes(query) ||
+          p.category.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (state.sortBy === 'price-asc') {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (state.sortBy === 'price-desc') {
+        filtered.sort((a, b) => b.price - a.price);
+      } else {
+        filtered.sort((a, b) => a.featuredOrder - b.featuredOrder);
+      }
+
+      resultsCount.textContent = `Showing ${filtered.length} ${filtered.length === 1 ? 'object' : 'objects'}`;
+
+      if (filtered.length === 0) {
+        productGrid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      productGrid.innerHTML = filtered.map(product => `
+        <article class="group flex flex-col">
+          <div class="relative aspect-[4/5] w-full rounded-2xl overflow-hidden bg-stone-150 border border-stone-200/80">
+            <img 
+              src="${product.image}" 
+              alt="${product.name}" 
+              onerror="this.onerror=null; this.src='${product.fallback}';"
+              loading="lazy"
+              class="w-full h-full object-cover object-center group-hover:scale-[1.03] transition-transform duration-500 ease-out cursor-pointer"
+              onclick="openQuickView('${product.id}')"
+            />
+            
+            <!-- Subtle Hover Action Overlay -->
+            <div class="absolute inset-x-3 bottom-3 flex items-center gap-2 opacity-100 sm:opacity-0 sm:translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200">
+              <button 
+                onclick="addToCart('${product.id}', 1)"
+                class="flex-1 py-2.5 px-3 rounded-xl bg-stone-900/95 backdrop-blur-xs text-white text-[11px] font-medium uppercase tracking-[0.1em] hover:bg-stone-900 transition-colors shadow-sm"
+              >
+                Add to Bag
+              </button>
+              <button 
+                onclick="openQuickView('${product.id}')"
+                aria-label="Quick view ${product.name}"
+                class="py-2.5 px-3 rounded-xl bg-white/95 backdrop-blur-xs text-stone-900 border border-stone-200 text-[11px] font-medium uppercase tracking-[0.08em] hover:bg-white transition-colors shadow-sm"
+              >
+                Quick View
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-3.5 flex items-start justify-between gap-3">
+            <div>
+              <p class="text-[11px] uppercase tracking-[0.12em] text-stone-400">${product.category}</p>
+              <h3 
+                onclick="openQuickView('${product.id}')"
+                class="text-sm font-normal text-stone-900 mt-0.5 cursor-pointer hover:underline underline-offset-4"
+              >
+                ${product.name}
+              </h3>
+            </div>
+            <span class="text-sm font-medium text-stone-900 shrink-0">${STORE_CONFIG.CURRENCY_SYMBOL}${product.price.toLocaleString()}</span>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function setCategory(category) {
+      state.category = category;
+      categoryPills.forEach(pill => {
+        const isActive = pill.dataset.category === category;
+        if (isActive) {
+          pill.className = 'cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-stone-900 text-white border border-stone-900 shrink-0';
+        } else {
+          pill.className = 'cat-pill px-4 py-2 rounded-full text-xs font-medium tracking-wide transition-all bg-white text-stone-600 border border-stone-200 hover:border-stone-400 shrink-0';
+        }
+      });
+
+      document.querySelectorAll('.nav-cat-link').forEach(link => {
+        if (link.dataset.navCat === category) {
+          link.classList.add('text-stone-900', 'font-medium');
+        } else {
+          link.classList.remove('text-stone-900', 'font-medium');
+        }
+      });
+
+      renderProducts();
+    }
+
+    // 6. Quick View Modal Logic
+    function openQuickView(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      state.quickViewProduct = product;
+      state.quickViewQty = 1;
+
+      qvImage.src = product.image;
+      qvImage.onerror = () => { qvImage.src = product.fallback; };
+      qvImage.alt = product.name;
+      qvCategory.textContent = product.category;
+      qvTitle.textContent = product.name;
+      qvPrice.textContent = formatMoney(product.price);
+      qvDescription.textContent = product.description;
+      qvMaterial.textContent = product.material;
+      qvDimensions.textContent = product.dimensions;
+      qvOrigin.textContent = product.origin;
+      qvQtyVal.textContent = '1';
+
+      qvModal.classList.remove('hidden');
+      qvModal.classList.add('flex');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeQuickView() {
+      qvModal.classList.add('hidden');
+      qvModal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // 7. Shopping Cart Logic
+    function addToCart(productId, qty = 1) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      const existing = state.cart.find(item => item.product.id === productId);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        state.cart.push({ product, qty });
+      }
+
+      renderCart();
+      showToast(`${product.name} added to bag`);
+    }
+
+    function updateCartQty(productId, delta) {
+      const index = state.cart.findIndex(item => item.product.id === productId);
+      if (index === -1) return;
+
+      state.cart[index].qty += delta;
+      if (state.cart[index].qty <= 0) {
+        state.cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    function removeFromCart(productId) {
+      state.cart = state.cart.filter(item => item.product.id !== productId);
+      renderCart();
+    }
+
+    function getCartTotals() {
+      const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+      const subtotal = state.cart.reduce((sum, item) => sum + item.product.price * item.qty, 0);
+      const shipping = subtotal === 0 ? 0 : (subtotal >= STORE_CONFIG.FREE_SHIPPING_THRESHOLD ? 0 : STORE_CONFIG.STANDARD_SHIPPING_FEE);
+      return { totalItems, subtotal, shipping, total: subtotal + shipping };
+    }
+
+    function renderCart() {
+      const { totalItems, subtotal, shipping } = getCartTotals();
+
+      // Update Header Badge & Drawer Count
+      cartBadge.textContent = totalItems;
+      drawerItemCount.textContent = `${totalItems} ${totalItems === 1 ? 'item' : 'items'}`;
+
+      // Free Shipping Bar
+      const progressPct = Math.min(100, (subtotal / STORE_CONFIG.FREE_SHIPPING_THRESHOLD) * 100);
+      shippingProgressBar.style.width = `${progressPct}%`;
+
+      if (subtotal >= STORE_CONFIG.FREE_SHIPPING_THRESHOLD) {
+        shippingStatusText.innerHTML = `<span class="font-medium text-stone-900">Complimentary standard shipping unlocked.</span>`;
+      } else {
+        const remaining = STORE_CONFIG.FREE_SHIPPING_THRESHOLD - subtotal;
+        shippingStatusText.innerHTML = `Add <span class="font-medium text-stone-900">${formatMoney(remaining)}</span> more for complimentary shipping.`;
+      }
+
+      // Render Cart Items
+      if (state.cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-16 space-y-3">
+            <p class="text-sm font-light text-stone-500">Your shopping bag is currently empty.</p>
+            <button onclick="closeCartDrawer()" class="text-xs uppercase tracking-[0.14em] text-stone-900 underline underline-offset-4">
+              Explore Objects
+            </button>
+          </div>
+        `;
+        cartSubtotal.textContent = formatMoney(0);
+        cartShippingCost.textContent = '—';
+        checkoutBtn.disabled = true;
+        return;
+      }
+
+      checkoutBtn.disabled = false;
+      cartSubtotal.textContent = formatMoney(subtotal);
+      cartShippingCost.textContent = shipping === 0 ? 'Complimentary' : formatMoney(shipping);
+
+      cartItemsContainer.innerHTML = state.cart.map(({ product, qty }) => `
+        <div class="py-4 flex gap-4">
+          <img 
+            src="${product.image}" 
+            alt="${product.name}" 
+            onerror="this.onerror=null; this.src='${product.fallback}';"
+            class="w-20 h-24 rounded-xl object-cover bg-stone-100 border border-stone-200 shrink-0"
+          />
+          <div class="flex-1 flex flex-col justify-between">
+            <div class="flex justify-between gap-2">
+              <div>
+                <h4 class="text-xs font-medium text-stone-900">${product.name}</h4>
+                <p class="text-[11px] text-stone-400 mt-0.5">${product.category}</p>
+              </div>
+              <span class="text-xs font-medium text-stone-900">${formatMoney(product.price * qty)}</span>
+            </div>
+
+            <div class="flex items-center justify-between pt-2">
+              <div class="inline-flex items-center border border-stone-200 rounded-full px-1.5 py-0.5">
+                <button onclick="updateCartQty('${product.id}', -1)" aria-label="Decrease quantity" class="w-6 h-6 flex items-center justify-center text-xs text-stone-600 hover:text-stone-900">&minus;</button>
+                <span class="w-6 text-center text-xs font-medium">${qty}</span>
+                <button onclick="updateCartQty('${product.id}', 1)" aria-label="Increase quantity" class="w-6 h-6 flex items-center justify-center text-xs text-stone-600 hover:text-stone-900">+</button>
+              </div>
+              <button onclick="removeFromCart('${product.id}')" class="text-[11px] text-stone-400 hover:text-stone-900 underline underline-offset-2">
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openCartDrawer() {
+      cartDrawer.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeCartDrawer() {
+      cartDrawer.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // 8. Paystack Checkout & Webhook Flow
+    function openCheckoutModal() {
+      const { subtotal, shipping, total } = getCartTotals();
+      document.getElementById('co-subtotal').textContent = formatMoney(subtotal);
+      document.getElementById('co-shipping').textContent = shipping === 0 ? 'Complimentary' : formatMoney(shipping);
+      document.getElementById('co-total').textContent = formatMoney(total);
+
+      const warningEl = document.getElementById('paystack-key-warning');
+      if (isPlaceholderPaystackKey()) {
+        warningEl.classList.remove('hidden');
+      } else {
+        warningEl.classList.add('hidden');
+      }
+
+      checkoutFormView.classList.remove('hidden');
+      checkoutSuccessView.classList.add('hidden');
+
+      closeCartDrawer();
+      checkoutModal.classList.remove('hidden');
+      checkoutModal.classList.add('flex');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeCheckoutModal() {
+      checkoutModal.classList.add('hidden');
+      checkoutModal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    async function sendOrderWebhook(orderPayload) {
+      if (!STORE_CONFIG.ORDER_WEBHOOK_URL) return;
+      try {
+        await fetch(STORE_CONFIG.ORDER_WEBHOOK_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(orderPayload)
+        });
+      } catch (err) {
+        console.warn('Order webhook notification skipped or failed:', err);
+      }
+    }
+
+    function showOrderConfirmation(orderRecord) {
+      document.getElementById('receipt-email').textContent = orderRecord.customer.email;
+      document.getElementById('receipt-ref').textContent = orderRecord.reference;
+      document.getElementById('receipt-total').textContent = formatMoney(orderRecord.total);
+      document.getElementById('receipt-customer').textContent = orderRecord.customer.fullName;
+      document.getElementById('receipt-phone').textContent = orderRecord.customer.phone;
+      document.getElementById('receipt-address').textContent = `${orderRecord.customer.address}, ${orderRecord.customer.city}`;
+
+      const receiptItemsEl = document.getElementById('receipt-items');
+      receiptItemsEl.innerHTML = orderRecord.items.map(item => `
+        <div class="flex justify-between gap-2">
+          <span>${item.name} &times; ${item.qty}</span>
+          <span class="font-medium text-stone-900">${formatMoney(item.price * item.qty)}</span>
+        </div>
+      `).join('') + `
+        <div class="flex justify-between gap-2 pt-1.5 border-t border-stone-200 text-stone-500">
+          <span>Delivery</span>
+          <span>${orderRecord.shipping === 0 ? 'Complimentary' : formatMoney(orderRecord.shipping)}</span>
+        </div>
+      `;
+
+      checkoutFormView.classList.add('hidden');
+      checkoutSuccessView.classList.remove('hidden');
+    }
+
+    function initiatePaystackPayment(e) {
+      e.preventDefault();
+
+      if (state.cart.length === 0) {
+        showToast('Your shopping bag is empty');
+        return;
+      }
+
+      const fullName = document.getElementById('co-name').value.trim();
+      const email = document.getElementById('co-email').value.trim();
+      const phone = document.getElementById('co-phone').value.trim();
+      const city = document.getElementById('co-city').value.trim();
+      const address = document.getElementById('co-address').value.trim();
+
+      if (!fullName || !email || !phone || !city || !address) {
+        showToast('Please complete all required delivery fields');
+        return;
+      }
+
+      if (typeof PaystackPop === 'undefined') {
+        showToast('Paystack SDK failed to load. Check your internet connection.');
+        return;
+      }
+
+      if (isPlaceholderPaystackKey()) {
+        openSetupModal();
+        showToast('Configure your Paystack Public Key first');
+        return;
+      }
+
+      const { subtotal, shipping, total } = getCartTotals();
+      const orderRef = 'ATL-' + Date.now();
+      const amountInPesewas = Math.round(total * 100);
+
+      // Snapshot cart items before clearing on success
+      const purchasedItems = state.cart.map(({ product, qty }) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        qty
+      }));
+
+      const itemSummaryString = purchasedItems
+        .map(item => `${item.name} (x${item.qty})`)
+        .join(', ');
+
+      const handler = PaystackPop.setup({
+        key: STORE_CONFIG.PAYSTACK_PUBLIC_KEY,
+        email: email,
+        amount: amountInPesewas,
+        currency: STORE_CONFIG.STORE_CURRENCY,
+        ref: orderRef,
+        metadata: {
+          custom_fields: [
+            {
+              display_name: 'Customer Name',
+              variable_name: 'customer_name',
+              value: fullName
+            },
+            {
+              display_name: 'Phone Number',
+              variable_name: 'phone_number',
+              value: phone
+            },
+            {
+              display_name: 'Delivery Address',
+              variable_name: 'delivery_address',
+              value: `${address}, ${city}`
+            },
+            {
+              display_name: 'Order Items',
+              variable_name: 'order_items',
+              value: itemSummaryString
+            }
+          ]
+        },
+        callback: function(response) {
+          const verifiedRef = response.reference || orderRef;
+          const orderRecord = {
+            reference: verifiedRef,
+            currency: STORE_CONFIG.STORE_CURRENCY,
+            subtotal,
+            shipping,
+            total,
+            customer: { fullName, email, phone, address, city },
+            items: purchasedItems,
+            paidAt: new Date().toISOString()
+          };
+
+          // Clear shopping bag
+          state.cart = [];
+          renderCart();
+
+          // Log order to optional webhook (Formspree / Google Apps Script)
+          sendOrderWebhook(orderRecord);
+
+          // Render minimalist confirmation screen
+          showOrderConfirmation(orderRecord);
+          showToast('Payment successful');
+        },
+        onClose: function() {
+          showToast('Payment window closed');
+        }
+      });
+
+      handler.openIframe();
+    }
+
+    // Developer Setup Modal Helpers
+    const setupModal = document.getElementById('setup-modal');
+    function openSetupModal() {
+      const statusEl = document.getElementById('setup-key-status');
+      if (isPlaceholderPaystackKey()) {
+        statusEl.textContent = 'Using placeholder key (pk_test_xxxxxxxx...) — Paste your real key to test live.';
+        statusEl.className = 'font-medium text-amber-700';
+      } else {
+        const isLive = STORE_CONFIG.PAYSTACK_PUBLIC_KEY.startsWith('pk_live_');
+        statusEl.textContent = isLive ? 'Live Key Configured (pk_live_...)' : 'Test Key Configured (pk_test_...)';
+        statusEl.className = 'font-medium text-emerald-700';
+      }
+      setupModal.classList.remove('hidden');
+      setupModal.classList.add('flex');
+    }
+
+    function closeSetupModal() {
+      setupModal.classList.add('hidden');
+      setupModal.classList.remove('flex');
+    }
+
+    // 9. Event Listeners
+    // Category pills
+    categoryPills.forEach(pill => {
+      pill.addEventListener('click', () => setCategory(pill.dataset.category));
+    });
+
+    // Top Nav & Footer Category Links
+    document.querySelectorAll('[data-nav-cat]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setCategory(btn.dataset.navCat);
+        document.getElementById('mobile-nav-menu').classList.add('hidden');
+        document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Sort dropdown
+    sortSelect.addEventListener('change', (e) => {
+      state.sortBy = e.target.value;
+      renderProducts();
+    });
+
+    // Synced Search Inputs
+    function handleSearchInput(val) {
+      state.searchQuery = val;
+      catalogSearchInput.value = val;
+      headerSearchInput.value = val;
+      clearSearchBtn.classList.toggle('hidden', !val);
+      renderProducts();
+    }
+
+    catalogSearchInput.addEventListener('input', (e) => handleSearchInput(e.target.value));
+    headerSearchInput.addEventListener('input', (e) => {
+      handleSearchInput(e.target.value);
+    });
+
+    clearSearchBtn.addEventListener('click', () => {
+      handleSearchInput('');
+      headerSearchInput.focus();
+    });
+
+    document.getElementById('search-toggle-btn').addEventListener('click', () => {
+      headerSearchBar.classList.toggle('hidden');
+      if (!headerSearchBar.classList.contains('hidden')) {
+        headerSearchInput.focus();
+      }
+    });
+
+    document.getElementById('close-search-btn').addEventListener('click', () => {
+      headerSearchBar.classList.add('hidden');
+    });
+
+    // Mobile Menu Toggle
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      document.getElementById('mobile-nav-menu').classList.toggle('hidden');
+    });
+
+    // Reset Filters
+    document.getElementById('reset-filters-btn').addEventListener('click', () => {
+      state.sortBy = 'featured';
+      sortSelect.value = 'featured';
+      handleSearchInput('');
+      setCategory('All');
+    });
+
+    // Quick View Controls
+    document.getElementById('quickview-close').addEventListener('click', closeQuickView);
+    document.getElementById('quickview-backdrop').addEventListener('click', closeQuickView);
+
+    document.getElementById('qv-qty-dec').addEventListener('click', () => {
+      if (state.quickViewQty > 1) {
+        state.quickViewQty--;
+        qvQtyVal.textContent = state.quickViewQty;
+      }
+    });
+
+    document.getElementById('qv-qty-inc').addEventListener('click', () => {
+      state.quickViewQty++;
+      qvQtyVal.textContent = state.quickViewQty;
+    });
+
+    document.getElementById('qv-add-btn').addEventListener('click', () => {
+      if (state.quickViewProduct) {
+        addToCart(state.quickViewProduct.id, state.quickViewQty);
+        closeQuickView();
+      }
+    });
+
+    // Cart Drawer Controls
+    document.getElementById('cart-open-btn').addEventListener('click', openCartDrawer);
+    document.getElementById('cart-close-btn').addEventListener('click', closeCartDrawer);
+    document.getElementById('cart-backdrop').addEventListener('click', closeCartDrawer);
+
+    // Checkout Controls
+    checkoutBtn.addEventListener('click', openCheckoutModal);
+    document.getElementById('checkout-close-btn').addEventListener('click', closeCheckoutModal);
+    document.getElementById('checkout-backdrop').addEventListener('click', closeCheckoutModal);
+    document.getElementById('checkout-form').addEventListener('submit', initiatePaystackPayment);
+    document.getElementById('continue-shopping-btn').addEventListener('click', closeCheckoutModal);
+
+    // Setup Guide Modal Controls
+    document.getElementById('setup-guide-trigger').addEventListener('click', openSetupModal);
+    document.getElementById('setup-close-btn').addEventListener('click', closeSetupModal);
+    document.getElementById('setup-backdrop').addEventListener('click', closeSetupModal);
+    document.getElementById('setup-done-btn').addEventListener('click', closeSetupModal);
+
+    // Newsletter Form
+    document.getElementById('newsletter-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = document.getElementById('newsletter-email');
+      const feedback = document.getElementById('newsletter-feedback');
+      feedback.textContent = `Thank you — ${input.value} has been added to our studio dispatch.`;
+      feedback.classList.remove('hidden');
+      input.value = '';
+    });
+
+    // Escape key closes modals/drawers
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeQuickView();
+        closeCartDrawer();
+        closeCheckoutModal();
+        closeSetupModal();
+      }
+    });
+
+    // Initial Render
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
+```
